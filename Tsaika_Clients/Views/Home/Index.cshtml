@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>
+        <i class="" aria-hidden="true"></i> List of Names
+    </h1>
+    <p class="lead">
+        On this website you can see how names are written in native and non-native language
+    </p>
+</div>
+<div class="container">
+
+    <form id="filter" action="?">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label for="inputState">Sort by : </label>
+                <select id="filterbyname" class="form-control" name="filterbyname">
+                    <option @ViewBag.asc value="ASC">A - Z</option>
+                    <option value="DESC" @ViewBag.desc>Z - A</option>
+                </select>
+            </div>
+
+
+
+            @*<div class="custom-control custom-checkbox form-group col-md" style="margin-top:3.5vh">
+                    <input type="checkbox" class="custom-control-input" id="checkbox_b" name="checkbox_b" value="B" @ViewBag.b>
+                    <label class="custom-control-label" for="checkbox_b">B</label>
+                </div>
+
+
+                <div class="custom-control custom-checkbox form-group col-md" style="margin-top:3.5vh">
+                    <input type="checkbox" class="custom-control-input" id="checkbox_c" name="checkbox_c" value="C" @ViewBag.c>
+                    <label class="custom-control-label" for="checkbox_c">C</label>
+                </div>*@
+
+
+
+            <div class="form-group col-md-4" style="margin-top:3.5vh">
+                <input type="submit" class="btn btn-primary" value="Search">
+            </div>
+
+        </div>
+
+    </form>
+    <div>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Name in a English language</th>
+                    <th scope="col">Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var x in ViewBag.client)
+                {
+
+
+                    <tr>
+                        <td>@x.Name</td>
+                        <td>@x.Eng_Name</td>
+                        <td>@x.Gender</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
