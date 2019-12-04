@@ -39,77 +39,38 @@ namespace Tsaika_Clients.Controllers
             }
             return roleid;
         }
-        public ActionResult Index(string filterbyname = "", string[] checkbox_check = null)
+        public ActionResult Index(string sortClient, string searchString)
         {
             ClientsContext db = new ClientsContext();
             ViewBag.roleid = getUserRole();//Добавить в каждый Action Result для админа
 
-            ViewBag.names = db.Clients.OrderByDescending(x => x.Name);
-
-            ViewBag.Title = "Home Page";
-
-
-            string filter = filterbyname;
-            if (filter == "DESC")
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortClient) ? "Name desc" : "";
+            var clients = from s in db.Clients
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
             {
-                ViewBag.asc = "";
-                ViewBag.desc = "selected";
+                clients = clients.Where(s => s.Name.ToUpper().Contains(searchString.ToUpper())
+                                       || s.Eng_Name.ToUpper().Contains(searchString.ToUpper()));
+            }
+            switch (sortClient)
+            {
+                case "Name desc":
+                    clients = clients.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    clients = clients.OrderBy(s => s.Name);
+                    break;
             }
 
-            if (filter == "ASC")
-            {
-                ViewBag.asc = "selected";
-                ViewBag.desc = "";
-            }
-
-            List<string> letters = new List<string>();
-            for (char letter = 'A'; letter <= 'Z'; letter++)
-            {
-                letters.Add(Convert.ToString(letter));
-            }
-
-            ViewBag.Letters = letters;
-            ViewBag.Letters_Count = letters.Count;
-            ViewBag.Checkbox = new string[letters.Count];
-            if (checkbox_check == null)
-            {
-                checkbox_check = ViewBag.Letters.ToArray();
-            }
-            for (int i = 0; i < letters.Count; i++)
-            {
-                if (checkbox_check.Contains(letters[i]))
-                    ViewBag.Checkbox[i] = "checked";
-
-            }
-            List<Clients> selected = new List<Clients>();
-
-            for (int i = 0; i < checkbox_check.Length; i++)
-            {
-                if (filter == "ASC")
-                    selected.AddRange(db.Clients.ToList().Where(x => x.Name[0].ToString() == checkbox_check[i]).OrderBy(x => x.Name));
-                else if (filter == "DESC")
-                    selected.AddRange(db.Clients.ToList().Where(x => x.Name[0].ToString() == checkbox_check[i]).OrderByDescending(x => x.Name));
-                else
-                    selected.AddRange(db.Clients.ToList().Where(x => x.Name[0].ToString() == checkbox_check[i]).OrderBy(x => x.Name));
+        
+        ViewBag.client = db.Clients;
+            return View(clients.ToList());
 
 
-            }
-            if (filter == "DESC")
-            {
-                selected.Reverse();
-            }
-            ViewBag.names = selected;
-            ViewBag.client = db.Clients;
-            List<Clients> selected1 = new List<Clients>();
-            return View();
 
 
         }
-        protected override void Dispose(bool disposing)
-        {
-            db.Dispose();
-            base.Dispose(disposing);
-        }
+       
         [Authorize(Roles="admin")]
         public ActionResult About()
         {
@@ -120,18 +81,29 @@ namespace Tsaika_Clients.Controllers
 
         public ActionResult Admin()
         {
-            ClientsContext db = new ClientsContext();
-            ViewBag.roleid = getUserRole();//Добавить в каждый Action Result для админа
-
             ViewBag.client = db.Clients;
-            List<Clients> selected1 = new List<Clients>();
-            return View();
+            return View(clients.ToList());
+            
+           
         }
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             Session.Abandon(); // it will clear the session at the end of request
             return RedirectToAction("index", "Home");
+        }
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Create(Clients client)
+        {
+            db.Clients.Add(client);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }
