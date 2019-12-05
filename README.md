@@ -46,3 +46,118 @@
 
 </nimed>
 ```
+## PHP функция для поиска человека по имени
+```
+echo $nimed -> nimi[0] -> attributes() ->id;
+function searchInimesedByName($query){
+    global $nimed;
+    $result = array();
+    foreach ($nimed -> nimi as $nimi1){
+        if (substr(strtolower($nimi1 -> emakeelne), 0, strlen($query))== strtolower($query))
+            array_push($result, $nimi1);
+    }
+    return $result;
+}
+```
+## PHP функция для поиска человека по полу
+```
+function searchInimesedBySugu($query){
+    global $nimed;
+    $result = array();
+    foreach ($nimed -> nimi as $nimi1){
+        if (substr(strtolower($nimi1 -> emakeelne), 0, strlen($query))== strtolower($query))
+            array_push($result, $nimi1);
+    }
+    return $result;
+}
+?>
+```
+## Первая фунция - вывод первого имени из таблицы
+```
+<div class="container text-center">
+    <h2>First Function</h2>
+</div>
+<div class="container text-center bg-secondary text-white">
+
+<h3>Last name added in table</h3>
+<?php echo $nimed -> nimi[0] -> emakeelne; ?>
+
+</div>
+```
+## Вторая функция - вывод таблицы с возможностью поиска
+```
+<div class="container text-center ">
+
+    <h2>Second Function</h2>
+
+<div class=" text-center bg-secondary text-white">
+
+<h3>Search by name:</h3>
+    <form action="?" method="post">
+        <input type="text" name="search" placeholder="Name"/>
+        <input type="submit" value="Leida" />
+    </form>
+    <table border="1" class="table table-dark table-hover">
+        <tr>
+            <th>Gender</th>
+            <th>Name</th>
+            <th>Name in different language</th>
+
+
+        </tr>
+        <?php
+        if (!empty($_POST["search"])){
+            $result = searchInimesedBySugu($_POST["search"]);
+            foreach ($result as $nimi1){
+                echo "<tr>";
+                echo "<td>".($nimi1 -> sugu)."</td>";
+                echo "<td>".($nimi1-> emakeelne)."</td>";
+                echo "<td>".($nimi1-> vorkkeelne)."</td>";
+                echo "<tr>";
+                //echo $arvuti -> name;
+            }
+        }
+        ?>
+
+    </table>
+
+</div>
+</div>
+```
+## Третья функция - вывод таблицы, и сортировка по полу 
+```
+<div class="container">
+    <div class="row justify-content-md-center">
+
+        <a href="index.php?x=mehed"><h3>Display only men</h3></a>
+        <hr>
+        <a href="index.php?x=naised"><h3>Display only women</h3></a>
+
+
+
+        <table class="table table-dark table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Gender</th>
+                <th scope="col">Name</th>
+                <th scope="col">Name in different language</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($nimed->nimi as $nimi2) {
+                if($nimi2->sugu == $form){
+                    echo '<tr>';
+                    echo '<td>'.$nimi2->emakeelne.'</td>';
+                    echo '<td>'.$nimi2->vorkkeelne.'</td>';
+                    echo '<td>'.$nimi2->sugu.'</td>';
+                    echo '</tr>';
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+</div>
+```
