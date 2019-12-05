@@ -7,34 +7,9 @@
     <h1>
         <i class="" aria-hidden="true"></i> List of Names
     </h1>
-    <p class="lead">
-        On this website you can see how names are written in native and non-native language
-    </p>
-</div>
-<div class="container">
-
-
-
-
-
-    @*<div class="custom-control custom-checkbox form-group col-md" style="margin-top:3.5vh">
-            <input type="checkbox" class="custom-control-input" id="checkbox_b" name="checkbox_b" value="B" @ViewBag.b>
-            <label class="custom-control-label" for="checkbox_b">B</label>
-        </div>
-
-
-        <div class="custom-control custom-checkbox form-group col-md" style="margin-top:3.5vh">
-            <input type="checkbox" class="custom-control-input" id="checkbox_c" name="checkbox_c" value="C" @ViewBag.c>
-            <label class="custom-control-label" for="checkbox_c">C</label>
-        </div>*@
-
-
-   
-
 
 </div>
 
-    </form>
 <div>
     @using (Html.BeginForm())
     {
@@ -67,8 +42,26 @@
         </tbody>
     </table>
 </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            @Html.ActionLink("Create", "Create","Home")
-        </div>
-    </div>
+
+
+        
+    
+<p>
+    
+    @if (Request.IsAuthenticated)
+    {
+
+
+        if (ViewBag.roleid == 1)
+        {
+            @Html.ActionLink("Create New", "Create", "Home")
+        }
+
+
+    }
+    else
+    {
+        <a href="~/Account/Login">Login as admin for add new</a>
+    }
+
+</p>

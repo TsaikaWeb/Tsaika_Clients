@@ -1,11 +1,12 @@
-﻿using MySqlX.XDevAPI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Tsaika_Clients.Models;
+
 
 namespace Tsaika_Clients.Controllers
 {
@@ -63,7 +64,7 @@ namespace Tsaika_Clients.Controllers
             }
 
         
-        ViewBag.client = db.Clients;
+            ViewBag.client = clients;
             return View(clients.ToList());
 
 
@@ -81,6 +82,10 @@ namespace Tsaika_Clients.Controllers
 
         public ActionResult Admin()
         {
+            ViewBag.roleid = getUserRole();
+            ClientsContext db = new ClientsContext();
+            var clients = from x in db.Clients
+                          select x;
             ViewBag.client = db.Clients;
             return View(clients.ToList());
             
@@ -103,6 +108,55 @@ namespace Tsaika_Clients.Controllers
             db.Clients.Add(client);
             db.SaveChanges();
 
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult Delete(int id)
+        {
+            ViewBag.roleid = getUserRole();
+
+            Clients b = db.Clients.Find(id);
+            if (b == null)
+            {
+                return HttpNotFound();
+            }
+            return View(b);
+        }
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Clients b = db.Clients.Find(id);
+            if (b == null)
+            {
+                return HttpNotFound();
+            }
+            db.Clients.Remove(b);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+
+        public ActionResult Edit(int? id)
+        {
+            ViewBag.roleid = getUserRole();
+
+            if (id == null)
+            {
+                return HttpNotFound();
+            }
+            Clients client = db.Clients.Find(id);
+            if (client != null)
+            {
+                return View(client);
+            }
+            return HttpNotFound();
+        }
+        [HttpPost]
+
+        public ActionResult Edit(Clients client)
+        {
+            db.Entry(client).State = EntityState.Modified;
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
     }
