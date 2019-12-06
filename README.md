@@ -169,4 +169,6 @@ function searchInimesedBySugu($query){
 - Администратор
 
 ## Главная страница
+<img src="images/index.png" width="200" height="50"/>
+
 
